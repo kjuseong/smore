@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.smore.mapper.StudyMapper">
+	
+	<!-- 스터디 모집 게시글 -->
+	
+	<select id="selectAllBoardCnt" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_GROUP
+	</select>
+
+	<select id="selectAllList" parameterType="Map" resultType="StudyGroupDTO">
+		SELECT STUD_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, GENDER, REGION, WIDO, GDO, LANG, PEOPLE, CONTACT, STUD_DATE, IP
+		  FROM S_GROUP
+		 ORDER BY STUD_NO DESC
+		 LIMIT #{begin}, #{recordPerPage}
+	</select>
+	
+	<insert id="insertStudy" parameterType="StudyGroupDTO">
+		INSERT INTO S_GROUP
+			(NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, GENDER, REGION, WIDO, GDO, LANG, PEOPLE, CONTACT, STUD_DATE, IP)
+		VALUES
+			(#{nickname}, #{title}, #{content}, NOW(), NOW(), 0, #{gender}, #{region}, #{wido}, #{gdo}, #{lang}, #{people}, #{contact}, #{studDate}, #{ip})
+	</insert>
+	
+	<update id="updateHit" parameterType="int">
+		UPDATE S_GROUP
+		   SET HIT = HIT + 1
+		 WHERE STUD_NO = #{studNo}
+	</update>
+	 
+	 <select id="selectStudyByNo" parameterType="int" resultType="StudyGroupDTO">
+		SELECT STUD_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, GENDER, REGION, WIDO, GDO, LANG, PEOPLE, CONTACT, STUD_DATE, IP
+          FROM S_GROUP
+		 WHERE STUD_NO = #{studNo}
+	</select>
+	
+	<update id="updateStudy" parameterType="StudyGroupDTO">
+		UPDATE S_GROUP
+		   SET TITLE = #{title}
+		     , CONTENT = #{content}
+		     , MODIFY_DATE = NOW()
+		     , GENDER = #{gender}
+		     , LANG = #{lang}
+		     , PEOPLE = #{people}
+		     , CONTACT = #{contact}
+		     , STUD_DATE = #{studDate}
+		 WHERE STUD_NO = #{studNo}
+	</update>
+
+	<delete id="deleteStudy" parameterType="int">
+		DELETE
+		  FROM S_GROUP
+		 WHERE STUD_NO = #{studNo}
+	</delete>
+	
+	<select id="selectStudyScroll" parameterType="Map" resultType="StudyGroupDTO">
+		SELECT STUD_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, GENDER, REGION, WIDO, GDO, LANG, PEOPLE, CONTACT, STUD_DATE, IP
+		  FROM S_GROUP
+		 ORDER BY STUD_NO DESC
+		 LIMIT #{begin}, #{recordPerPage}
+	</select>
+			
+	<select id="selectUserLikeCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_ZZIM
+		 WHERE STUD_NO = #{studNo}
+		   AND NICKNAME = #{nickname}
+	</select>	
+	
+	<select id="selectStudyLikeCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_ZZIM
+		 WHERE STUD_NO = #{studNo}
+	</select>	
+	
+	<insert id="insertLike" parameterType="map">
+		INSERT INTO S_ZZIM
+			(STUD_NO, NICKNAME)
+		VALUES
+			(#{studNo}, #{nickname})
+	</insert>
+	
+	<delete id="deleteLike" parameterType="map">
+		DELETE
+		  FROM S_ZZIM
+		 WHERE STUD_NO = #{studNo}
+		   AND NICKNAME = #{nickname}
+	</delete>	
+	
+</mapper>
+
+	
+	
+	

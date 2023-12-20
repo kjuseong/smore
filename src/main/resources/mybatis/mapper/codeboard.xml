@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.smore.mapper.CodeBoardMapper">
+
+	<select id="selectListCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM C_BOARD
+	</select>
+	
+	<select id="selectCodeBoardListByMap" parameterType="Map" resultType="CodeBoardDTO">
+	    SELECT CO_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM C_BOARD
+		<where>
+			<choose>
+				 	<when test="type == 'TITLE'">
+				 		AND TITLE LIKE CONCAT('%', #{keyword}, '%')
+				 	</when>
+				 	<when test="type == 'CONTENT'">
+				 		AND CONTENT LIKE CONCAT('%', #{keyword}, '%')
+				 	</when>
+				 	<when test="type == 'NICKNAME'">
+				 		AND NICKNAME LIKE CONCAT('%', #{keyword}, '%')
+				 	</when>	
+			 </choose>
+		 </where>
+		 ORDER BY CO_NO DESC
+		 LIMIT #{begin}, #{recordPerPage}
+	</select>
+	
+	<insert id="insertCodeBoard" parameterType="CodeBoardDTO" useGeneratedKeys="true" keyProperty="coNo">
+		INSERT INTO C_BOARD
+			(NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP)
+		VALUES
+			(#{nickname}, #{title}, #{content}, NOW(), NOW(), 0, #{ip})
+	</insert>
+	
+	<insert id="insertImage" parameterType="CodeImageDTO">
+		INSERT INTO C_IMAGE
+			(CO_NO, FILESYSTEM)
+		 VALUES
+		 	(#{coNo}, #{filesystem})
+	</insert>
+	
+	<update id="updateHit" parameterType="int">
+		UPDATE C_BOARD
+		   SET HIT = HIT + 1
+		 WHERE CO_NO = #{coNo}
+	</update>
+	
+	<select id="selectCodeBoardByNo" parameterType="int" resultType="CodeBoardDTO">
+		SELECT CO_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM C_BOARD
+		 WHERE CO_NO = #{coNo} 
+	</select>
+	
+	<select id="selectAllCodeImageList" resultType="CodeImageDTO">
+		SELECT CO_NO, FILESYSTEM
+		  FROM C_IMAGE
+	</select>
+	
+	<select id="selectCodeImageListInCode" parameterType="int" resultType="CodeImageDTO">
+		SELECT CO_NO, FILESYSTEM
+		  FROM C_IMAGE
+		 WHERE CO_NO = #{coNo}
+	</select>
+	
+	<delete id="deleteCodeImage" parameterType="String">
+		DELETE 
+		  FROM C_IMAGE
+		 WHERE FILESYSTEM = #{filesystem}
+	</delete>
+	
+	<update id="updateCodeBoard">
+		UPDATE C_BOARD
+		   SET TITLE = #{title}
+		     , CONTENT = #{content}
+		     , MODIFY_DATE = NOW()
+		 WHERE CO_NO = #{coNo}
+	</update>
+	
+	<delete id="deleteCodeBoard" parameterType="int">
+		DELETE
+		  FROM C_BOARD
+		 WHERE CO_NO = #{coNo}
+	</delete>
+
+	<select id="selectAllUploadCount" resultType="int"> 
+		SELECT COUNT(*)
+		  FROM UPLOAD  
+	</select>
+	
+	<select id="selectAttachByNo" parameterType="int" resultType="CodeAttachDTO">
+		SELECT ATTACH_NO, PATH, ORIGIN, FILESYSTEM, DOWNLOAD_CNT, CO_NO
+		  FROM C_ATTACH
+		 WHERE ATTACH_NO = #{attachNo}
+	</select>
+	
+	<update id="updateDownloadCnt" parameterType="int">
+		UPDATE C_ATTACH 
+		   SET DOWNLOAD_CNT = DOWNLOAD_CNT +1
+		 WHERE ATTACH_NO = #{attachNo}  
+	</update>
+	
+	<select id="selectAttachList" parameterType="int" resultType="CodeAttachDTO">
+		SELECT ATTACH_NO, PATH, ORIGIN, FILESYSTEM, DOWNLOAD_CNT, CO_NO
+		  FROM C_ATTACH
+		 WHERE CO_NO = #{coNo}  
+	</select>
+	
+	<insert id="insertAttach" parameterType="CodeAttachDTO">
+		INSERT INTO C_ATTACH
+			(PATH, ORIGIN, FILESYSTEM, DOWNLOAD_CNT, CO_NO)
+		VALUES
+			(#{path}, #{origin}, #{filesystem}, 0, #{coNo})	
+	</insert>
+	
+</mapper>

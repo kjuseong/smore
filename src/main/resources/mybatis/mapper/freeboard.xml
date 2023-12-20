@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.smore.mapper.FreeMapper">
+
+	<select id="selectListCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM FREEBOARD
+	</select>
+
+	<select id="selectFreeListByMap" parameterType="Map" resultType="FreeBoardDTO">
+		SELECT FREE_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+  		  FROM FREEBOARD
+		 ORDER BY FREE_NO DESC
+		 LIMIT #{begin}, #{recordPerPage}
+	</select>
+
+	<!-- 검색 count -->
+	<select id="selectSearchCount" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM FREEBOARD
+		  	<where>
+		  		<if test="type=='TITLE'">
+		  			TITLE LIKE CONCAT('%', #{keyword}, '%')
+		  		</if>
+		  		<if test="type=='CONTENT'">
+		  			AND CONTENT LIKE CONCAT('%', #{keyword}, '%')
+		  		</if>
+		  		<if test="type=='NICKNAME'">
+		  			AND NICKNAME LIKE CONCAT('%', #{keyword}, '%')
+		  		</if>
+		  	</where>
+	</select>
+	
+	<!-- 검색 기능 list -->
+	<select id="selectFreeSearchList" parameterType="Map" resultType="FreeBoardDTO">
+		SELECT FREE_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+  		  FROM FREEBOARD
+	  		  <where>
+					<if test="type=='TITLE'">
+						${type} LIKE CONCAT('%', #{keyword}, '%')
+					</if>
+					<if test="type=='CONTENT'">
+						AND ${type} LIKE CONCAT('%', #{keyword}, '%')
+					</if>
+					<if test="type=='NICKNAME'">
+						AND ${type} LIKE CONCAT('%', #{keyword}, '%')
+					</if>
+	  		  </where>
+	  	 ORDER BY FREE_NO DESC
+	  	 LIMIT #{begin}, #{recordPerPage}
+	</select>
+	
+
+	<!-- 글쓰기 -->
+	<insert id="insertFree" parameterType="FreeBoardDTO">
+		INSERT INTO FREEBOARD
+			(NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP)
+		 VALUES
+		 	(#{nickname}, #{title}, #{content}, NOW(), NOW(), 0, #{ip})
+	</insert>
+	
+	<insert id="insertImage" parameterType="FreeImageDTO">
+		INSERT INTO FREEIMAGE
+			(FREE_NO, FILESYSTEM)
+		 VALUES
+		 	(#{freeNo}, #{filesystem})
+	</insert>
+	
+	<!-- 조회수 -->
+	<update id="updateHit" parameterType="int">
+		UPDATE FREEBOARD
+		   SET HIT = HIT + 1
+		 WHERE FREE_NO = #{freeNo}
+	</update>
+	
+	<!-- 상세보기 -->
+	<select id="selectFreeByNo" parameterType="int" resultType="FreeBoardDTO">
+		SELECT FREE_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM FREEBOARD
+		 WHERE FREE_NO = #{freeNo} 
+	</select>
+	
+	<select id="selectAllFreeImageList" resultType="FreeImageDTO">
+		SELECT FREE_NO, FILESYSTEM
+		  FROM FREEIMAGE
+	</select>
+	
+	<select id="selectFreeImageListInFree" parameterType="int" resultType="FreeImageDTO">
+		SELECT FREE_NO, FILESYSTEM
+		  FROM FREEIMAGE
+		 WHERE FREE_NO = #{freeNo}
+	</select>
+	
+	<delete id="deleteFreeImage" parameterType="String">
+		DELETE 
+		  FROM FREEIMAGE
+		 WHERE FILESYSTEM = #{filesystem}
+	</delete>
+	
+	<!-- 수정 -->
+	<update id="updateFree" parameterType="FreeBoardDTO">
+		UPDATE FREEBOARD
+		   SET TITLE = #{title}, CONTENT = #{content}, MODIFY_DATE = NOW()
+		 WHERE FREE_NO = #{freeNo}
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="deleteFree" parameterType="int">
+		DELETE
+		  FROM FREEBOARD
+		 WHERE FREE_NO = #{freeNo}
+	</delete>
+	
+	
+</mapper>
+	

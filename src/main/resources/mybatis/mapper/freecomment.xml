@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.smore.mapper.FreeCmtMapper">
+
+	<select id="selectCommentCnt" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		  FROM FREECMT
+		 WHERE FREE_NO = #{freeNo} AND STATE = 1
+	</select>
+	
+	<select id="selectCommentList" parameterType="Map" resultType="FreeCommentDTO">
+		
+		SELECT CMT_NO, FREE_NO, NICKNAME, CMT_CONTENT, CREATE_DATE, MODIFY_DATE, STATE, DEPTH, GROUP_NO, IP
+		  FROM FREECMT
+		 WHERE FREE_NO = #{freeNo}
+		 ORDER BY GROUP_NO DESC, DEPTH ASC, CREATE_DATE ASC
+	     LIMIT #{begin}, #{recordPerPage}
+		 <!-- WHERE C.RN BETWEEN #{begin} AND #{end} -->
+	</select>
+
+
+	
+	<insert id="insertFreecmt" parameterType="FreeCommentDTO" useGeneratedKeys="true" keyProperty="cmtNo">
+		INSERT INTO FREECMT
+			(FREE_NO, NICKNAME, CMT_CONTENT, CREATE_DATE, MODIFY_DATE, STATE, DEPTH, IP, GROUP_NO)
+		  VALUES
+		  	(#{freeNo}, #{nickname}, #{cmtContent}, NOW(), NOW(), 1, 0, #{ip}, 0)
+	</insert>
+	
+<!-- 댓삭 -->
+	<update id="deleteComment" parameterType="int">
+		UPDATE FREECMT
+		   SET STATE = -1
+		 WHERE CMT_NO = #{cmtNo}
+	</update>
+	
+<!-- 	댓 수정 -->
+	<update id="modifyComment" parameterType="FreeCommentDTO">
+		UPDATE FREECMT
+		   SET FREE_NO = #{freeNo}, CMT_CONTENT = #{cmtContent}, IP = #{ip} , MODIFY_DATE = NOW()
+		 WHERE CMT_NO = #{cmtNo}
+	</update>
+	
+	<!-- 대댓 -->
+	<insert id="insertRecomment" parameterType="FreeCommentDTO">
+		INSERT INTO FREECMT
+			(FREE_NO, NICKNAME, CMT_CONTENT, CREATE_DATE, MODIFY_DATE, STATE, DEPTH, IP, GROUP_NO)
+		  VALUES
+		  	(#{freeNo}, #{nickname}, #{cmtContent}, NOW(), NOW(), 1, 1, #{ip}, #{groupNo})
+	</insert>
+	
+	<!-- 댓글계층 -->
+	<!-- 댓글이 삽입될 때(saveComment())마다 그때 insert된 group_no에 +1을 해줌. saveComment에서 update, insert 동시에 -->
+    <update id="updateGroupNo" parameterType="FreeCommentDTO">
+		UPDATE FREECMT
+		   SET GROUP_NO = LAST_INSERT_ID(GROUP_NO + 1)
+	</update>
+	
+</mapper> 

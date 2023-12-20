@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.smore.mapper.AdminMapper">
+
+ 	<resultMap type="AccessLogDTO" id="AccessLogMap">
+		<result column="ACCESS_LOG_NO" property="accessLogNo" />
+		<result column="ID" property="id" />
+		<result column="LAST_LOGIN_DATE" property="lastLoginDate" />
+	</resultMap>
+	<resultMap type="SleepUserDTO" id="SleepUserMap">
+		<result column="USER_NO" property="userNo" />
+		<result column="ID" property="id" />
+		<result column="PW" property="pw" />
+		<result column="NAME" property="name"/>
+		<result column="GRADE" property="grade"/>
+		<result column="GENDER" property="gender" />
+		<result column="EMAIL" property="email" />
+		<result column="MOBILE" property="mobile"/>
+		<result column="BIRTHYEAR" property="birthyear" />
+		<result column="BIRTHDAY" property="birthday" />
+		<result column="POSTCODE" property="postcode" />
+		<result column="ROAD_ADDRESS" property="roadAddress" />
+		<result column="JIBUN_ADDRESS" property="jibunAddress" />
+		<result column="DETAIL_ADDRESS" property="detailAddress" />
+		<result column="EXTRA_ADDRESS" property="extraAddress" />
+		<result column="AGREE_CODE" property="agreeCode" />
+		<result column="SNS_TYPE" property="snsType"/>	
+		<result column="USER_STATE" property="userState" />
+		<result column="JOIN_DATE" property="joinDate" />
+		<result column="LAST_LOGIN_DATE" property="lastLoginDate" />
+		<result column="SLEEP_DATE" property="sleepDate" />
+	</resultMap>
+	<resultMap type="UserDTO" id="UserMap">
+		<result column="ROW_NUM" property="rowNum" />
+		<result column="USER_NO" property="userNo" />
+		<result column="ID" property="id" />
+		<result column="PW" property="pw" />
+		<result column="NAME" property="name" />
+		<result column="NICKNAME" property="nickname" />
+		<result column="GRADE" property="grade" />
+		<result column="GENDER" property="gender" />
+		<result column="EMAIL" property="email" />
+		<result column="MOBILE" property="mobile" />
+		<result column="BIRTH_YEAR" property="birthYear" />
+		<result column="BIRTHDAY" property="birthday" />
+		<result column="POSTCODE" property="postcode" />
+		<result column="ROAD_ADDRESS" property="roadAddress" />
+		<result column="JIBUN_ADDRESS" property="jibunAddress" />
+		<result column="DETAIL_ADDRESS" property="detailAddress" />
+		<result column="EXTRA_ADDRESS" property="extraAddress" />
+		<result column="AGREE_CODE" property="agreeCode" />
+		<result column="SNS_TYPE" property="snsType" />
+		<result column="JOIN_DATE" property="joinDate" />
+		<result column="PW_MODIFY_DATE" property="pwModifyDate" />
+		<result column="INFO_MODIFY_DATE" property="infoModifyDate" />
+		<result column="SESSION_ID" property="sessionId" />
+		<result column="SESSION_LIMIT_DATE" property="sessionLimitDate" />
+		<result column="BLACK_CNT" property="blackCnt" />
+		<result column="USER_STATE" property="userState" />
+		<collection resultMap="AccessLogMap" property="accessLogDTO"></collection>
+	</resultMap>
+	<resultMap type="AllUserDTO" id="AllUserMap">
+		<result column="ROW_NUM" property="rowNum" />
+		<collection resultMap="UserMap" property="userDTO"></collection>
+		<collection resultMap="SleepUserMap" property="sleepUserDTO"></collection>
+		<collection resultMap="AccessLogMap" property="accessLogDTO"></collection>
+	</resultMap> 
+
+	<resultMap type="AllBoardDTO" id="AllBoardMap">
+		<result column="ROW_NUM" property="rowNum"/>
+		<result column="FREE_NO" property="freeNo"/>
+		<result column="QA_NO" property="qaNo"/>
+		<result column="STUD_NO" property="studNo"/>
+		<result column="CO_NO" property="coNo"/>
+		<result column="NICKNAME" property="nickname"/>
+		<result column="TITLE" property="title"/>
+		<result column="CONTENT" property="content"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="MODIFY_DATE" property="modifyDate"/>
+		<result column="HIT" property="hit"/>
+		<result column="IP" property="ip"/>
+	</resultMap> 
+
+	<select id="selectUserCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM USERS
+	</select>
+	
+	<select id="selectSleepUserCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM SLEEP_USERS
+	</select>
+		
+	<select id="selectReportUserCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM REDBELL
+	</select>
+	
+	<select id="selectFreeBoardCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM FREEBOARD
+	</select>
+	
+	<select id="selectSGroupBoardCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_GROUP
+	</select>
+	
+	<select id="selectCodeBoardCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM C_BOARD
+	</select>
+		
+	<select id="selectQnaBoardCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM Q_BOARD
+	</select>	
+		   	
+	 <select id="selectUserByNo" parameterType="int" resultType="UserDTO">
+	 	SELECT USER_NO, ID, JOIN_DATE
+	 	  FROM USERS 
+	 	 WHERE USER_NO = #{userNo}
+	 </select> 
+		
+ 	<select id="selectUsersByQuery" parameterType="map" resultMap="AllUserMap">
+		SELECT D.USER_NO, D.ID, D.NAME, D.NICKNAME, D.GENDER, D.JOIN_DATE, D.LAST_LOGIN_DATE, D.USER_STATE, D.SNS_TYPE 
+  		  FROM (SELECT C.USER_NO, C.ID, C.NAME, C.NICKNAME, C.GENDER, C.LAST_LOGIN_DATE, C.USER_STATE, C.JOIN_DATE, C.SNS_TYPE
+                  FROM (SELECT U.USER_NO, U.ID, U.NAME, U.NICKNAME, U.GENDER, U.JOIN_DATE, A.LAST_LOGIN_DATE, U.USER_STATE, U.SNS_TYPE  
+		                  FROM USERS U LEFT OUTER JOIN ACCESS_LOG A
+		                    ON U.ID = A.ID
+         UNION ALL
+        SELECT USER_NO, ID, NAME, NICKNAME, GENDER, JOIN_DATE, LAST_LOGIN_DATE, USER_STATE, SNS_TYPE
+          FROM SLEEP_USERS) C) D
+    	<where>
+    		 <!-- D.ROW_NUM BETWEEN #{begin} AND #{end}  --> 		
+   		  <if test="column=='ID' or column == 'NICKNAME'">
+   		  	${column} LIKE CONCAT('%', #{query}, '%')
+   		  </if> 
+		  <!-- <if test="column=='JOIN_DATE'">${column} BETWEEN STR_TO_DATE(#{start}, '%Y-%m-%d') AND  STR_TO_DATE(#{stop}, '%Y-%m-%d') -->
+		  <if test="column=='JOIN_DATE'">AND ${column} >= STR_TO_DATE(#{start}, '%Y-%m-%d') AND  ${column} <![CDATA[<]]> STR_TO_DATE(#{stop}, '%Y-%m-%d') + 1</if>
+		</where>
+         ORDER BY D.USER_NO DESC   
+		 LIMIT #{begin}, #{recordPerPage} 
+	</select>   
+			
+	<select id="selectAllUserCountByQuery" parameterType="Map" resultType="int">
+	     SELECT COUNT(*) + (SELECT COUNT(*) FROM SLEEP_USERS)
+	       FROM USERS 
+	<where>
+	 	<if test="column=='ID' or column== 'NICKNAME'">
+	 		${column} LIKE CONCAT('%', #{query}, '%')
+	 	</if>
+	 	<if test="column=='JOIN_DATE'">
+	 		AND ${column} >= STR_TO_DATE(#{start}, '%Y-%m-%d') AND  ${column} <![CDATA[<]]> STR_TO_DATE(#{stop}, '%Y-%m-%d') + 1
+	 	</if> 
+ 	</where> 	 
+	</select>
+	
+	<!-- 자유게시판 검색 -->
+	<select id="selectFreeBoardByQuery" parameterType="map" resultMap="AllBoardMap">
+		SELECT FREE_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+  		  FROM FREEBOARD
+    	<where>
+ 		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  
+		  <!-- <if test="column=='JOIN_DATE'">${column} BETWEEN STR_TO_DATE(#{start}, '%Y-%m-%d') AND  STR_TO_DATE(#{stop}, '%Y-%m-%d') -->
+		  <if test="column2=='CREATE_DATE'">
+		  		AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		</where>
+         ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}   
+	</select>
+	
+	<select id="selectFreeBoardByCountQuery" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM FREEBOARD  
+ 		 <where>
+  		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+		  <if test="column2=='CREATE_DATE'">
+			 		AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		 </where> 
+	</select>
+	
+	<!-- 코드게시판 검색 -->
+	<select id="selectCodeBoardByQuery" parameterType="map" resultMap="AllBoardMap">
+		SELECT CO_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM C_BOARD
+    	<where>
+  		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+		  <if test="column2=='CREATE_DATE'">AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1</if>
+		</where>
+         ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}   
+	</select>
+	
+	<select id="selectCodeBoardByCountQuery" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM C_BOARD  
+ 		 <where>
+          <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+		  <if test="column2=='CREATE_DATE'">
+		  	AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		 </where> 
+	</select>
+	
+	<!-- 스터디게시판 검색 -->
+	<select id="selectStudyBoardByQuery" parameterType="map" resultMap="AllBoardMap">
+		SELECT STUD_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM S_GROUP
+    	<where>
+    		 <!-- D.ROW_NUM BETWEEN #{begin} AND #{end}  --> 		
+   		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>  
+		  <!-- <if test="column=='JOIN_DATE'">${column} BETWEEN STR_TO_DATE(#{start}, '%Y-%m-%d') AND  STR_TO_DATE(#{stop}, '%Y-%m-%d') -->
+		  <if test="column2=='CREATE_DATE'">
+		  	AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		</where>
+         ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}   
+	</select>
+	
+	<select id="selectStudyBoardByCountQuery" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_GROUP  
+ 		 <where>
+		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+		  <if test="column2=='CREATE_DATE'">
+		  	AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		 </where> 
+	</select>
+	
+	<!-- QNA게시판 검색 -->
+	<select id="selectQnaBoardByQuery" parameterType="map" resultMap="AllBoardMap">
+		SELECT QA_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM Q_BOARD
+    	<where>
+  		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+		  <!-- <if test="column=='JOIN_DATE'">${column} BETWEEN STR_TO_DATE(#{start}, '%Y-%m-%d') AND  STR_TO_DATE(#{stop}, '%Y-%m-%d') -->
+		  <if test="column2=='CREATE_DATE'">
+		  	AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		</where>
+         ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}  
+	</select>
+	
+	<select id="selectQnaBoardByCountQuery" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM Q_BOARD  
+ 		 <where>
+  		  <if test="column2=='ID'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+   		  <if test="column2 == 'TITLE'">
+   		  	${column2} LIKE CONCAT('%', #{query2}, '%')
+   		  </if>
+		  <if test="column2=='CREATE_DATE'">
+		 	AND ${column2} >= STR_TO_DATE(#{start2}, '%Y-%m-%d') AND  ${column2} <![CDATA[<]]> STR_TO_DATE(#{stop2}, '%Y-%m-%d') + 1
+		  </if>
+		 </where> 
+	</select>
+	
+ 	<select id="selectAllUserList" parameterType="map" resultMap="AllUserMap">
+		SELECT D.USER_NO, D.ID, D.NAME, D.NICKNAME, D.GENDER, D.JOIN_DATE , D.LAST_LOGIN_DATE, D.USER_STATE, D.SNS_TYPE 
+  		  FROM (SELECT C.USER_NO, C.ID, C.NAME, C.NICKNAME, C.GENDER, C.LAST_LOGIN_DATE, C.USER_STATE, C.JOIN_DATE, C.SNS_TYPE
+                  FROM (SELECT U.USER_NO, U.ID, U.NAME, U.NICKNAME, U.GENDER, U.JOIN_DATE, A.LAST_LOGIN_DATE, U.USER_STATE, U.SNS_TYPE  
+		                  FROM USERS U LEFT OUTER JOIN ACCESS_LOG A
+		                    ON U.ID = A.ID
+         UNION ALL
+         
+        SELECT USER_NO, ID, NAME, NICKNAME, GENDER, JOIN_DATE, LAST_LOGIN_DATE, USER_STATE, SNS_TYPE
+          FROM SLEEP_USERS) C) D
+         ORDER BY D.JOIN_DATE DESC
+		 LIMIT #{begin}, #{recordPerPage}
+	</select>  	
+
+	<!-- 일반유저 조회 -->
+	<select id="selectUserListByMap" parameterType="map" resultType="UserDTO">
+		SELECT  B.USER_NO, B.ID, B.NAME, B.NICKNAME, B.GENDER, B.JOIN_DATE, B.USER_STATE, B.INFO_MODIFY_DATE, B.LAST_LOGIN_DATE, B.SNS_TYPE
+		  FROM (SELECT U.USER_NO, U.ID, U.NAME, U.NICKNAME, U.GENDER, U.JOIN_DATE, U.USER_STATE, U.INFO_MODIFY_DATE, A.LAST_LOGIN_DATE, U.SNS_TYPE 
+		  		  FROM USERS U LEFT OUTER JOIN ACCESS_LOG A
+                    		ON U.ID = A.ID) B
+		 ORDER BY B.JOIN_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}  
+	</select>
+
+	<!-- 휴면유저 조회 -->
+	<select id="selectSleepUserListByMap" parameterType="map" resultType="SleepUserDTO">
+		SELECT U.USER_NO, U.ID, U.NAME, U.GENDER, U.JOIN_DATE, U.LAST_LOGIN_DATE, U.SLEEP_DATE, U.SNS_TYPE
+		  FROM SLEEP_USERS U
+	     ORDER BY U.JOIN_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage} 	  
+	</select> 
+		
+	<!-- 자유게시판 조회 -->
+	<select id="selectFreeListByMap" parameterType="Map" resultType="FreeBoardDTO">
+		SELECT FREE_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM FREEBOARD
+		 ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage} 	
+	</select>
+	
+	<!-- 스터디모집게시판 조회 -->
+	<select id="selectStudyListByMap" parameterType="Map" resultType="StudyGroupDTO">
+		SELECT STUD_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, GENDER, REGION, WIDO, GDO, LANG, PEOPLE, CONTACT, STUD_DATE, IP
+		  FROM S_GROUP
+ 		 ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}
+	</select>
+	
+	<!-- 코드게시판 조회 -->
+	<select id="selectCodeListByMap" parameterType="map" resultType="CodeBoardDTO">
+		SELECT CO_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP
+		  FROM C_BOARD
+		 ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}       
+	</select>
+	
+	<!-- qna게시판 조회 -->
+	<select id="selectQnaListByMap" parameterType="map" resultType="QnaBoardDTO">
+		SELECT QA_NO, NICKNAME, TITLE, CONTENT, CREATE_DATE, MODIFY_DATE, HIT, IP, ANSWER
+		  FROM Q_BOARD
+		 ORDER BY CREATE_DATE DESC   
+		 LIMIT #{begin}, #{recordPerPage}       
+	</select>
+
+	<!-- 유저 다중 탈퇴 -->
+	
+   <insert id="insertRetireUser" parameterType="RetireUserDTO">
+      INSERT INTO RETIRE_USERS
+         (USER_NO, ID, JOIN_DATE, RETIRE_DATE)
+      VALUES
+		(#{userNo}, #{id}, #{joinDate}, NOW())
+   </insert>
+	
+	<delete id="deleteUserList" parameterType="List">
+		DELETE
+		  FROM USERS
+		  <where>
+		  	USER_NO IN 
+		 	<foreach collection="list" item="userNo" open="(" close=")" separator=","> 
+		 		#{userNo}
+		 	</foreach>
+		  </where>
+	</delete>
+	
+	<!-- 스터디게시판 다중 삭제 -->
+	<delete id="deleteStudyBoardList" parameterType="List">
+		DELETE
+		  FROM S_GROUP
+		  <where>
+		  	 STUD_NO IN
+		 	<foreach collection="list" item="studNo" open="(" close=")" separator=",">  
+		 		#{studNo}
+		 	</foreach>
+		  </where>
+	</delete>
+	
+	
+	<!-- 자유게시판 다중 삭제 -->
+	<delete id="deleteFreeBoardList" parameterType="List">
+		DELETE
+		  FROM FREEBOARD
+		  <where>
+		  	 FREE_NO IN
+		 	<foreach collection="list" item="freeNo" open="(" close=")" separator=",">  
+		 		#{freeNo}
+		 	</foreach>
+		  </where>
+	</delete>
+	
+	<!-- 코드게시판 다중 삭제  -->
+	<delete id="deleteCodeBoardList" parameterType="List">
+		DELETE
+		  FROM C_BOARD
+		 <where>
+		 	CO_NO IN
+	 		<foreach collection="list" item="coNo" open="(" close=")" separator=",">  
+		 		#{coNo}
+		 	</foreach>
+		 </where> 
+	</delete>
+	
+	<!-- Qna게시판 다중 삭제 -->
+	<delete id="deleteQnaBoardList" parameterType="List">
+		DELETE
+		  FROM Q_BOARD
+		 <where>
+		 	QA_NO IN
+	 		<foreach collection="list" item="qaNo" open="(" close=")" separator=",">  
+		 		#{qaNo}
+		 	</foreach>
+		 </where> 
+	</delete>
+	
+	<!-- 휴면 복구 -->
+	
+	 <select id="selectSleepUserByNo" parameterType="int" resultType="SleepUserDTO">
+	 	SELECT USER_NO, ID, NICKNAME, PW, NAME, GRADE, GENDER, EMAIL, MOBILE, BIRTHYEAR, BIRTHDAY, POSTCODE, ROAD_ADDRESS, JIBUN_ADDRESS, DETAIL_ADDRESS, EXTRA_ADDRESS, AGREE_CODE, SNS_TYPE, USER_STATE, JOIN_DATE, LAST_LOGIN_DATE, SLEEP_DATE
+	 	  FROM SLEEP_USERS
+	 	 WHERE USER_NO = #{userNo}    
+	 </select>
+	
+	
+	<delete id="deleteSleepUserList" parameterType="List">
+		DELETE
+		  FROM SLEEP_USERS
+		  <where>
+		  	USER_NO IN 
+		 	<foreach collection="list" item="userNo" open="(" close=")" separator=",">  <!-- memberNo를 ()로 덮어주고 separator로 구분을해줌(여러개가 나오니까) -->
+		 		#{userNo}
+		 	</foreach>
+		  </where>
+	</delete>
+	
+	<update id="updateAccessInfo" parameterType="String">
+		UPDATE ACCESS_LOG
+		   SET LAST_LOGIN_DATE = NOW()
+		 WHERE ID = #{id}  
+	</update>
+	
+</mapper>
+	
+	
+	
+	

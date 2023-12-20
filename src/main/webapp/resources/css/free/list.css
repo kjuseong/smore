@@ -1,0 +1,160 @@
+@charset "UTF-8";
+
+	
+	table {
+	  border: 1px #a39485 solid;
+	  font-size: .9em;
+	  box-shadow: 0 2px 5px rgba(0,0,0,.25);
+	  width: 75%;
+	  border-collapse: collapse;
+	  border-radius: 5px;
+	  overflow: hidden;
+	  margin-left:auto; 
+      margin-right:auto;
+	}
+	
+	.t-list {
+		margin-top: 60px;
+	}
+	
+	
+	#btn_write{
+ 		margin-left: 242px;
+ 		margin-bottom: 20px;
+		background-color:#000000;
+		border-radius:28px;
+		border:1px solid #000000;
+		display:inline-block;
+		cursor:pointer;
+		color:white;
+		font-family:Arial;
+		font-size:13px;
+		padding:5px 24px;
+		text-decoration:none;
+		text-shadow:0px 1px 0px #2f6627;
+	}
+	#btn_write:focus {
+		 outline: none;
+	}
+	
+/* 	#f_write {
+		 text-decoration:none;
+		 color: black;
+		 padding: 8px;
+	     margin-right: 240px;
+	     height: 100%;
+	     line-height: 40px;
+	}
+	 */
+	th {
+		padding: 5px;
+		border-top: 1px solid silver;
+		border-bottom: 1px solid silver;
+		text-align: center;
+		font-size: 12px;
+	}
+	
+	thead {
+  		font-weight: bold;
+ 	 	color: black;
+  		border-bottom: 1px solid red;
+	}
+	
+	
+	th:nth-of-type(1) { width: 110px; }
+	th:nth-of-type(2) { width: 750px; }
+	th:nth-of-type(3) { width: 220px; }
+	th:nth-of-type(4) { width: 150px; }
+	th:nth-of-type(5) { width: 100px; }
+	
+	
+	td, th {
+  		padding: 1em .5em;
+  		vertical-align: middle;
+	}
+	
+	
+   td {
+  		border-bottom: 1px solid rgba(0,0,0,.1);
+  		background: #fff;
+	}
+  
+	#align {
+		text-align: center;
+	}
+	
+	.paging {
+		padding: 30px 0;
+		margin-bottom: 30px;
+	}
+	.ul-paging{
+		list-style:none;
+		display:inline;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	
+	#n-icon {
+		padding-top: 8px;
+	}
+	
+	.li-page {
+	    float: left;
+	    margin-right: 20px;
+	}
+	
+	.li-page a {
+		float:left;
+		padding: 7px;
+    	padding-right: 15px;
+		width:3px;
+		color:#000;
+		font:bold 12px tahoma;
+		border:1px solid #eee;
+		text-align:center;
+		text-decoration:none;
+	}
+	
+	.ul-paging li a:hover, .ul-paging li a:focus, .ul-paging li a:active {
+		color:#fff;
+		border:1px solid skyblue;
+		background-color:skyblue;
+	}
+	
+	.searching {
+		padding-bottom: 50px;
+		display:inline;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+	
+	.type {
+		width: 95px;
+	    border: 1px solid #C4C4C4;
+	    box-sizing: border-box;
+	    border-radius: 10px;
+	    padding: 6px 13px;
+	    font-style: normal;
+	    font-weight: 400;
+	    font-size: 14px;
+	    line-height: 16px;
+	}
+	
+	.keyword {
+		margin: 0 5px 2px 2px;
+		padding: 4px 8px;
+		border: 1px solid lightgray;
+		border-radius: 10px;
+	}
+		
+	.btn_search {
+		background-color: white;
+		padding: 5px 5px;
+		border-radius: 10px;
+		border: 1px solid #F2E4C5; 
+	}
+	.btn_search:hover {
+		background-color: #F2E4C5;
+	}

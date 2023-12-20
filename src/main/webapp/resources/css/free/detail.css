@@ -1,0 +1,166 @@
+@charset "UTF-8";
+
+	* {
+		box-sizing: border-box;
+	}
+	
+	.wr-wrapper {
+		position: absolute;
+	  	left: 50%;
+	 	transform: translateX(-50%);
+	    margin-top: 60px;
+	 	padding: 1.5rem 1.5rem 5rem;
+	}
+	
+	.btn_zone {
+		width: 400px; 
+		display: inline-block;
+	}
+	
+	.blind {
+		display: none;
+	}
+	
+	#lnk_like:hover span {
+		cursor: pointer;
+		color: #f83030;
+	}
+	#heart {
+		width: 16px;
+		margin-right: 5px;
+	}
+	
+	#like {
+		display: inline-block;
+		padding: 4px 4px 0 0;
+	}
+	
+	#like_count {
+		display: inline-block;
+		padding-top: 4px;
+	}
+	
+	.btn_addcmt {
+		background-color:#000000;
+		border-radius:28px;
+		border:1px solid #000000;
+		display:inline-block;
+		cursor:pointer;
+		color:white;
+		font-family:Arial;
+		font-size:13px;
+		padding:5px 24px;
+		text-decoration:none;
+	}
+	
+	.btn_editcmt {
+		background-color:black;
+		border-radius:28px;
+		border:1px solid #000000;
+		display:inline-block;
+		cursor:pointer;
+ 		color:white;
+		font-family:Arial;
+		font-size:13px;
+		padding:5px 24px;
+		margin-bottom: 7px;
+	}
+	
+	.btn_addrecmt {
+		background-color:black;
+		border-radius:28px;
+		border:1px solid #000000;
+		display:inline-block;
+		cursor:pointer;
+ 		color:white;
+		font-family:Arial;
+		font-size:13px;
+		padding:5px 24px;
+		margin-bottom: 7px;
+	}
+	
+	.btn_removecmt, .btn_editcmt_area {
+		margin-left: 8px;
+	}
+	
+	.btn_removecmt, .btn_editcmt_area, .btn_recomment_area {
+		border-radius:8px;
+		border:1px solid #000000;
+		display:inline-block;
+		cursor:pointer;
+ 		color: #000000;
+		font-family:Arial;
+		font-size:12px;
+		padding:5px 10px;
+		margin-bottom: 3px;
+		margin-top: 5px;
+	}
+
+	#btn_addcmt:active {
+		position:relative;
+		top:1px;
+	}
+	
+	.btn_cmtList {
+		margin: 0 0 30px;
+	    font-size: 22px;
+	}
+	
+   	.commentinput {
+	    font-family: inherit;
+	    padding: 1rem 1rem 1.5rem;
+	    outline: none;
+	    border: 2px solid #e1e1e1;
+	    border-radius: 16px;
+	    width: 100%;
+	    min-height: 100px;
+	    margin-bottom: 10px;
+	    resize: none;
+  	}
+  	
+  	.commentbutton {
+	  	display: flex;
+	    justify-content: flex-end;
+	    margin: 16px 0 24px;
+  	}
+  	
+  	#btn_cmtlist {
+  		display:inline-block;
+  		padding: 18px 7px 0 0;
+  	}
+  	
+  	.cmt_cnt {
+  		position: relative;
+  		bottom: 10px;
+  		display:inline-block; 
+  		padding: 8px 2px 0 0;
+  	}
+
+  	.recmtContent {
+  		resize : none;
+  	}
+  	
+	.btn_modify, .btn_remove, .btn_list {
+		background-color:black;
+		border-radius:28px;
+		border:1px solid #000000;
+		display:inline-block;
+		cursor:pointer;
+ 		color:white;
+		font-family:Arial;
+		font-size:13px;
+		padding:5px 24px;
+		margin-bottom: 7px;
+	}
+	
+	#fr-title {
+		font-size: 28px;
+		margin-bottom: 20px;
+	}
+	
+	#fr-hit, #fr-date {
+		text-align: right;
+	}
+ 	.py-5 {
+		margin-top: 1300px;
+	}

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gdu.smore.mapper.ListMapper">
+
+	<resultMap type="UserDTO" id="UserMap">
+		<result column="ROW_NUM" property="rowNum" />
+		<result column="USER_NO" property="userNo" />
+		<result column="ID" property="id" />
+		<result column="PW" property="pw" />
+		<result column="NAME" property="name" />
+		<result column="NICKNAME" property="nickname" />
+		<result column="GRADE" property="grade" />
+		<result column="GENDER" property="gender" />
+		<result column="EMAIL" property="email" />
+		<result column="MOBILE" property="mobile" />
+		<result column="BIRTH_YEAR" property="birthYear" />
+		<result column="BIRTHDAY" property="birthday" />
+		<result column="POSTCODE" property="postcode" />
+		<result column="ROAD_ADDRESS" property="roadAddress" />
+		<result column="JIBUN_ADDRESS" property="jibunAddress" />
+		<result column="DETAIL_ADDRESS" property="detailAddress" />
+		<result column="EXTRA_ADDRESS" property="extraAddress" />
+		<result column="AGREE_CODE" property="agreeCode" />
+		<result column="SNS_TYPE" property="snsType" />
+		<result column="JOIN_DATE" property="joinDate" />
+		<result column="PW_MODIFY_DATE" property="pwModifyDate" />
+		<result column="INFO_MODIFY_DATE" property="infoModifyDate" />
+		<result column="SESSION_ID" property="sessionId" />
+		<result column="SESSION_LIMIT_DATE" property="sessionLimitDate" />
+		<result column="BLACK_CNT" property="blackCnt" />
+		<result column="USER_STATE" property="userState" />
+		<collection resultMap="StudyMap" property="studyGroupDTO"></collection>
+	</resultMap>
+	
+   <resultMap type="StudyGroupDTO" id="StudyMap">
+      <result column="ROW_NUM" property="rowNum" />
+      <result column="STUD_NO" property="studNo" />
+      <result column="NICKNAME" property="nickname" />
+      <result column="TITLE" property="title" />
+      <result column="CONTENT" property="content" />
+      <result column="CREATE_DATE" property="createDate" />
+      <result column="MODIFY_DATE" property="modifyDate" />
+      <result column="HIT" property="hit" />
+      <result column="GENDER" property="gender" />
+      <result column="REGION" property="region" />
+      <result column="WIDO" property="wido" />
+      <result column="GDO" property="gdo" />
+      <result column="LANG" property="lang" />
+      <result column="PEOPLE" property="people" />
+      <result column="CONTACT" property="contact" />
+      <result column="STUD_DATE" property="studDate" />
+   </resultMap>
+	
+	<resultMap type="StudyZzimDTO" id="zzimMap">
+		<result column="STUD_NO" property="studNo"/>
+		<result column="NICKNAME" property="nickname"/>
+		<collection resultMap="StudyMap" property="studyGroupDTO"></collection>
+	</resultMap>
+	
+	<select id="selectStudyListCount" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_GROUP S
+		 WHERE S.NICKNAME = #{nickname}   
+	</select>
+
+	<select id="selectStudyListByMap" parameterType="Map" resultType="StudyGroupDTO">
+		SELECT STUD_NO, NICKNAME, TITLE, CONTENT, HIT, LANG, STUD_DATE 
+  	      FROM S_GROUP              
+         WHERE NICKNAME = #{nickname}
+         ORDER BY STUD_DATE DESC
+	</select>
+
+	<select id="selectZzimListCount" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		  FROM S_ZZIM Z
+		 WHERE Z.NICKNAME = #{nickname}
+	</select>
+		
+	<select id="selectZzimListByMap" parameterType="Map" resultMap="zzimMap">
+	SELECT Z.STUD_NO, Z.NICKNAME, S.NICKNAME AS JANG, S.TITLE, S.CONTENT, S.HIT, S.LANG, S.STUD_DATE
+      FROM S_ZZIM Z RIGHT OUTER JOIN S_GROUP S
+		ON Z.STUD_NO = S.STUD_NO
+	 WHERE Z.NICKNAME = #{nickname} 		  
+     ORDER BY STUD_DATE DESC
+	</select>
+	   
+</mapper>
